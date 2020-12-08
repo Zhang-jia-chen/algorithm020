@@ -3,47 +3,78 @@
 # 这个可以使用深度优先遍历，为什么是深度优先而不是广度优先
 # 画一个决策树，当n=1时生成的括号“((”,不符合条件，但是 n=2时，由 n=1这条路径能走到“(())”，并且符合条件。
 # 如果是广度优先会把n=1这种情况排除。所以要使用深度优先遍历。
+# def generate_parenthesis(n)
+#     res = []
+#     generate(n).each do |s|
+#         res << s if is_valid(s)
+#     end
+#     res
+# end
+# # 生成所有括号
+# # 优化 可以使用迭代
+# def generate(n)
+#     res = []
+#     return res << '' if n == 0
+#     f1 = ['']
+#     n.times do |time|
+#         f2 = []
+#         f1_first = []
+#         f1.each do |s|
+#             f1_first << s + '('
+#             f1_first << s + ')'
+#         end
+#         f1_first.each do |s|
+#             f2 << s + '('
+#             f2 << s + ')'
+#         end
+#         f1 = f2
+#     end
+#     f1
+# end
+
+# # 判断括号是否有效
+# def is_valid(s)
+#     return false if s.length.odd? # 逻辑上没必要，但是可以加速判断
+#     pairs = {')' => '('}
+#     stack = []
+#     s.chars.each do |char|
+#         if pairs[char].nil?
+#             stack.push(char)
+#         else
+#             return false if stack.pop != pairs[char]
+#         end
+#     end
+#     return false if stack.length > 0
+#     true
+# end
+
+# def generate_parenthesis(n)
+#     res = []
+#     dfs(res, n, n, '')
+#     return res
+# end
+# 第二种方法
+# 递归化为尾递归的关键在于找出递归中的所有变量
 def generate_parenthesis(n)
-    res = []
-    generate(n).each do |s|
-        res << s if is_valid(s)
-    end
+    dfs(n, n, res=[], cur_node = '')
     res
 end
-# 生成所有括号
-# 优化 可以使用迭代
-def generate(n)
-    res = []
-    return res << '' if n == 0
-    f1 = ['']
-    n.times do |time|
-        f2 = []
-        f1_first = []
-        f1.each do |s|
-            f1_first << s + '('
-            f1_first << s + ')'
-        end
-        f1_first.each do |s|
-            f2 << s + '('
-            f2 << s + ')'
-        end
-        f1 = f2
-    end
-    f1
-end
 
-# 判断括号是否有效
-def is_valid(s)
-    return false if s.length.odd? # 逻辑上没必要，但是可以加速判断
-    pairs = {')' => '('}
-    stack = []
-    s.chars.each do |char|
-        if pairs[char].nil?
-            stack.push(char)
-        else
-            return false if stack.pop != pairs[char]
-        end
+def dfs(l, r, res, cur_node)
+    # 边界条件
+    if l == 0 and r == 0
+        res << cur_node
+        return
     end
-    return false if stack.length > 0
-    true
+    
+    # 当前层逻辑
+    # 深度优先遍历
+    if l > 0
+        # p cur_node + '('
+        dfs(l-1, r, res, cur_node + '(')
+    end
+    if r > l
+        # p cur_node + ')'
+        dfs(l, r-1, res, cur_node + ')')
+    end
 end
